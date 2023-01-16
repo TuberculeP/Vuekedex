@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import SearchPokemon from "@/components/SearchPokemon";
+import SearchView from "@/views/SearchView";
 
 const routes = [
   {
     path: '/',
-    name: 'searchpokemon',
-    component: SearchPokemon
+    name: 'search',
+    component: SearchView
   },
 ]
 

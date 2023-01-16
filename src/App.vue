@@ -2,7 +2,7 @@
   <h1>Pokédex Benchmark</h1>
   <UserDeck/>
   <nav>
-    <router-link to="/">Home</router-link>
+    <router-link to="/">Search</router-link>
   </nav>
   <router-view/>
 
