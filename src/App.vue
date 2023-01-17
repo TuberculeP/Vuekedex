@@ -1,6 +1,6 @@
 <template>
   <h1>Pokédex Benchmark</h1>
-  <UserDeck/>
+  <!--<UserDeck/>-->
   <nav>
     <router-link to="/">Search</router-link>
   </nav>

@@ -1,25 +1,40 @@
 <template>
-<div id="deck">
-  <div class="cell" v-for="i in 6" :key="i"></div>
-</div>
+<div id="deck" @dragover.prevent @dragenter.prevent @drop="onDrop($event)"></div>
 </template>
 
 <script>
 export default {
   name: "UserDeck",
+  data() {
+    return {
+      cards: 0,
+    }
+  },
+  methods: {
+    onDrop(event) {
+      if(this.cards < 6){
+        let cardID = event.dataTransfer.getData('cardID').split("-");
+        let card = document.getElementById(cardID[0]+'-'+cardID[1]).cloneNode(true);
+        card.id = cardID[0]+'-'+(parseInt(cardID[1])+1);
+        document.getElementById('deck').appendChild(card)
+        this.cards++
+      }
+    }
+  }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 div#deck{
   display: flex;
+  min-width: 600px;
+  min-height: 100px;
   width: fit-content;
   margin: 20px auto;
-  div.cell{
-    margin: 5px;
+  background-color: #2c3e50;
+  div.card{
+    border: 1px solid white;
     width: 80px;
-    height: 80px;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.25);
   }
 }
 </style>
