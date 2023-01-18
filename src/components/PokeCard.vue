@@ -22,6 +22,11 @@ export default {
     },
     nameFormat(string){
       let array = string.split('-');
+      array.forEach((string,index) => {
+        if(string==='f'){
+          array[index] = "♀"
+        }
+      })
       let first = array[0].charAt(0).toUpperCase() + array[0].slice(1);
       if(array.length === 1){
         return first
