@@ -5,7 +5,7 @@
         type="text" placeholder="Search..."
         ref="input"
         v-model="inputValue">
-    <select name="types" id="types" v-model="filter">
+    <select name="types" id="types" v-model="filter" @change="getList">
     </select>
   </div>
   <div class="results">
@@ -70,6 +70,7 @@ export default {
         "fairy": "#FFB6C1"
       },
       filter: "default",
+      pokeNames: [],
     }
   },
 
@@ -83,23 +84,21 @@ export default {
       return fetch(url).then(response => response.json()).then(data => data)
     },
     getList(){
-      this.getData("https://pokeapi.co/api/v2/pokemon?limit=2000").then(data => {
-        this.sortedPoke["default"] = data['results'];
-      })
-      Object.keys(this.sortedPoke).forEach(name => {
-      if(name !== "default"){
-        this.getData("https://pokeapi.co/api/v2/type/"+name).then(data => {
-          this.sortedPoke[name] = [];
+      if(this.filter === 'default'){
+        this.getData("https://pokeapi.co/api/v2/pokemon?limit=2000").then(data => {
+          this.pokeNames = data['results'];
+        })
+      }else{
+        this.getData("https://pokeapi.co/api/v2/type/"+this.filter).then(data => {
+          this.pokeNames = [];
           data["pokemon"].forEach(pokeObject => {
-            this.sortedPoke[name].push(pokeObject['pokemon'])
+            this.pokeNames.push(pokeObject['pokemon'])
           })
         })
       }
-      })
     },
-    //filter name list -----------------------------------------------------------------------------
     getFilteredPokemons(){
-      return this.sortedPoke[this.filter].filter((pokemon) => {
+      return this.pokeNames.filter((pokemon) => {
         return pokemon.name.includes(this.inputValue.toLowerCase().replaceAll(' ', '-'))
       }).slice(0,10)
     },
