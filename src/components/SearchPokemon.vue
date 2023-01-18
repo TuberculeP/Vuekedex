@@ -1,18 +1,16 @@
 <template>
-  <h2>Rechercher des Pokémons</h2>
+  <h2>Search for Pokémons</h2>
   <div class="search">
     <input
-        type="text" placeholder="Recherche..."
+        type="text" placeholder="Search..."
         ref="input"
         v-model="inputValue">
-    <select name="types" id="types" @change="getList()" v-model="filter">
-      <option value="default">Tout type</option>
-      <option value="water">Eau</option>
+    <select name="types" id="types" v-model="filter">
     </select>
   </div>
   <div class="results">
       <poke-card
-          v-for="(pokemon, index) in filteredPokemons"
+          v-for="(pokemon, index) in getFilteredPokemons()"
           :key="pokemon.name"
           :pokemon="pokemon"
           :index="index"
@@ -30,8 +28,27 @@ export default {
   data() {
     return{
       inputValue: "",
-      pokeNames: [],
-      filter: 'default',
+      sortedPoke: {
+        "default": [],
+        "normal": [],
+        "fire": [],
+        "water": [],
+        "electric": [],
+        "grass": [],
+        "ice": [],
+        "fighting": [],
+        "poison": [],
+        "ground": [],
+        "flying": [],
+        "psychic": [],
+        "bug": [],
+        "rock": [],
+        "ghost": [],
+        "dragon": [],
+        "dark": [],
+        "steel": [],
+        "fairy": []
+      },
       typeColor: {
         "normal": "#F5F5DC",
         "fire": "#F08030",
@@ -52,6 +69,7 @@ export default {
         "steel": "#B0C4DE",
         "fairy": "#FFB6C1"
       },
+      filter: "default",
     }
   },
 
@@ -65,35 +83,43 @@ export default {
       return fetch(url).then(response => response.json()).then(data => data)
     },
     getList(){
-      if(this.filter === 'default'){
-        this.getData('https://pokeapi.co/api/v2/pokemon?limit=2000').then(data => {
-          this.pokeNames = data["results"];
-        })
-      }else{
-        this.getData('https://pokeapi.co/api/v2/type/'+this.filter).then(data => {
-          this.pokeNames = data["pokemon"];
-          console.log(this.pokeNames)
+      this.getData("https://pokeapi.co/api/v2/pokemon?limit=2000").then(data => {
+        this.sortedPoke["default"] = data['results'];
+      })
+      Object.keys(this.sortedPoke).forEach(name => {
+      if(name !== "default"){
+        this.getData("https://pokeapi.co/api/v2/type/"+name).then(data => {
+          this.sortedPoke[name] = [];
+          data["pokemon"].forEach(pokeObject => {
+            this.sortedPoke[name].push(pokeObject['pokemon'])
+          })
         })
       }
-    }
-  },
-
-  computed: {                                                                           /*COMPUTED*/
+      })
+    },
     //filter name list -----------------------------------------------------------------------------
-    filteredPokemons(){
-      return this.pokeNames.filter((pokemon) => {
+    getFilteredPokemons(){
+      return this.sortedPoke[this.filter].filter((pokemon) => {
         return pokemon.name.includes(this.inputValue.toLowerCase().replaceAll(' ', '-'))
       }).slice(0,10)
-    }
+    },
   },
+  computed: {                                                                           /*COMPUTED*/
 
-
+  },
                                                                                             /*INIT*/
   // -----------------------------------------------------------------------------------------------
   created() {
     this.getList()
   },
   mounted() {
+    let select = document.querySelector('select');
+    Object.keys(this.sortedPoke).forEach(type => {
+      let option = document.createElement('option');
+      option.value = type;
+      option.innerHTML = type;
+      select.appendChild(option);
+    })
     this.$refs.input.focus()
   },
 
@@ -120,6 +146,7 @@ div.search{
     border: none;
     box-sizing: border-box;
     padding: 10px 20px;
+    text-align: center;
     background-color: #42b983;
     font-weight: bold;
     color: white;

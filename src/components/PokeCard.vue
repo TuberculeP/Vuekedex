@@ -51,7 +51,7 @@ div.card{
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  transition: transform 100ms, box-shadow 100ms;
+  transition: transform 200ms, box-shadow 200ms;
   &:hover{
     transform: translate(-10px, -10px);
     box-shadow: 10px 10px 0 black;
